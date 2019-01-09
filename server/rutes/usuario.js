@@ -23,8 +23,8 @@ app.get("/usuarios",(req,res)=>{
 
         
 
-
-        Usuario.count({estado:true},(err,conteo)=>{
+        // permite el contar cuantos resultados fueron obtenidos
+        Usuario.countDocuments({estado:true},(err,conteo)=>{
             res.json({
                 ok:true,
                 usuario:usuariosDB,
@@ -110,6 +110,9 @@ app.delete("/usuarios/:id",(req,res)=>{
     let id = req.params.id
     
     /*
+
+    //permite eliminar de forma permanente de la base de datos
+
     Usuario.findByIdAndRemove(id,(err,borrado)=>{
         if(err){
             res.status(400).json({
@@ -150,7 +153,7 @@ app.delete("/usuarios/:id",(req,res)=>{
             res.status(400).json({
                 ok:false,
                 error:{
-                    nick: "/ds/dffg/sasd \ sds",
+                    nick: "/ERROR/IDENTIFICATION/404 \ No Found",
                     messaje: "Usuario no encontrado"
                 }
             })

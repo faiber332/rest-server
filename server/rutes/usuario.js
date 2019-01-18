@@ -4,8 +4,8 @@ const express = require("express");
 const app = express();
 const Usuario = require("../models/usuario")
 const _ =  require("underscore")
-
-app.get("/usuarios",(req,res)=>{
+const {verificarToken,verificarRolAdmin} = require("./../midleware/autorizacion")
+app.get("/usuarios",verificarToken,(req,res)=>{
 
     let inicio = Number(req.query.desde || 0)
     let limite = Number(req.query.limite || 5)
@@ -15,7 +15,7 @@ app.get("/usuarios",(req,res)=>{
     .limit(limite) // limita a una visualizacion de 5
     .exec((err,usuariosDB)=>{
         if(err){
-            res.status(400).json({
+            return res.status(400).json({
                 ok:false,
                 error:err
             })
@@ -25,7 +25,7 @@ app.get("/usuarios",(req,res)=>{
 
         // permite el contar cuantos resultados fueron obtenidos
         Usuario.countDocuments({estado:true},(err,conteo)=>{
-            res.json({
+            return res.json({
                 ok:true,
                 usuario:usuariosDB,
                 cuantos:conteo
@@ -40,7 +40,7 @@ app.get("/usuarios",(req,res)=>{
 })
 
  
-app.post("/usuarios",(req,res)=>{
+app.post("/usuarios",[verificarToken,verificarRolAdmin],(req,res)=>{
     let body = req.body
 
     let usuario = new Usuario({
@@ -62,7 +62,7 @@ app.post("/usuarios",(req,res)=>{
         // para que no muestre el hash lo muestra null en pantalla
         // usuario.password = null
 
-        res.json({
+        return res.json({
             ok:true,
             messaje:"hemos registrado su usuario",
             usuario
@@ -84,20 +84,20 @@ app.post("/usuarios",(req,res)=>{
 
 })
 
-app.put("/usuarios/:id",(req,res)=>{
+app.put("/usuarios/:id",[verificarToken,verificarRolAdmin],(req,res)=>{
     let id = req.params.id
 
     let body = _.pick(req.body,["nombre","email","role","estado"])
 
     Usuario.findByIdAndUpdate(id,body,{new:true, runValidators:true},(err,user)=>{
         if(err){
-            res.status(400).json({
+            return res.status(400).json({
                 ok:false,
                 error:err
             })
         }
 
-        res.json({
+        return res.json({
             ok:true,
             usuario:user
         })
@@ -106,7 +106,7 @@ app.put("/usuarios/:id",(req,res)=>{
 
     
 })
-app.delete("/usuarios/:id",(req,res)=>{
+app.delete("/usuarios/:id",[verificarToken,verificarRolAdmin],(req,res)=>{
     let id = req.params.id
     
     /*
@@ -142,7 +142,7 @@ app.delete("/usuarios/:id",(req,res)=>{
 
     Usuario.findByIdAndUpdate(id,{estado:false},{new:true},(err,user)=>{
         if(err){
-            res.status(400).json({
+            return res.status(400).json({
                 ok:false,
                 error:err
             })
@@ -150,7 +150,7 @@ app.delete("/usuarios/:id",(req,res)=>{
 
 
         if(!user){
-            res.status(400).json({
+            return res.status(400).json({
                 ok:false,
                 error:{
                     nick: "/ERROR/IDENTIFICATION/404 \ No Found",
@@ -159,7 +159,7 @@ app.delete("/usuarios/:id",(req,res)=>{
             })
         }
 
-        res.json({
+        return res.json({
             ok:true,
             Eliminado: user
         })

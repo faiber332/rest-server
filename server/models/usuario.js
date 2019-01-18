@@ -2,13 +2,20 @@ const mongoose = require("mongoose")
 const UniqueValidator = require("mongoose-unique-validator")
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
+
+// inicializador de Scheme
 let Schema = mongoose.Schema
 
+
+// roles posibles
 let valRol = {
     values: ["ADMIN","USER","MONITOR","OPT"],
     message: '{VALUES} Este rol no esta permitido '
 }
 
+
+
+// esquema del objeto 
 let usuarioSchema = new Schema({
     nombre :{
         type: String,
@@ -52,7 +59,8 @@ usuarioSchema.methods.toJSON = function(){
 
     return userObject
 }
-
+// validacion unique validator
 usuarioSchema.plugin(UniqueValidator,{message: '{PATH} email debe ser unico'})
 
+// exportacion del modelo
 module.exports = mongoose.model("Usuario",usuarioSchema)

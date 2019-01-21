@@ -30,3 +30,7 @@ process.env.URLDB = url
 
 process.env.VENCT = 60 * 60 * 24 * 30
 process.env.SEED = process.env.SEED || "seed-secreto-xs"
+
+
+// google client id
+process.env.CLIENT_ID = "113231955345-628jn99d087ju71cl5aqfggg81nu3rk1.apps.googleusercontent.com"

@@ -17,7 +17,7 @@ let valRol = {
 
 // esquema del objeto 
 let usuarioSchema = new Schema({
-    nombre :{
+    nombre:{
         type: String,
         required: [true,"nombre necesario"]
     },
